@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clean Old Deployment') {
+            steps {
+                sh 'rm -rf /var/www/html/site1/*'
+            }
+        }
+
+        stage('Deploy New Files') {
+            steps {
+                sh 'cp -r * /var/www/html/site1/'
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo 'Repo1 deployed successfully'
+        }
+    }
+}
