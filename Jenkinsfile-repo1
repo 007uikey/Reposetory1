@@ -1,22 +1,31 @@
 pipeline {
     agent any
 
-    triggers {
-        githubPush()
-    }
-
     stages {
 
-        stage('Clean Old Deployment') {
+        stage('Clean Workspace') {
             steps {
-                sh 'rm -rf /var/www/html/*'
+                cleanWs()
             }
         }
 
-        stage('Deploy New Files') {
+        stage('Build') {
             steps {
-                sh 'cp -r * /var/www/html/'
-                sh 'chown -R apache:apache /var/www/html'
+                echo "Building branch: ${env.BRANCH_NAME}"
+
+                sh '''
+                mkdir -p build
+                cp index.html build/
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                sudo rm -rf /var/www/html/*
+                sudo cp -r build/* /var/www/html/
+                '''
             }
         }
 
@@ -24,7 +33,11 @@ pipeline {
 
     post {
         success {
-            echo 'Repo1 deployed successfully'
+            echo "Deployment Successful"
+        }
+
+        failure {
+            echo "Deployment Failed"
         }
     }
 }
