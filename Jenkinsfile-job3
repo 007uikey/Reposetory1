@@ -1,0 +1,19 @@
+pipeline {
+
+    agent { label 'slave3' }
+
+    stages {
+
+        stage('Deploy') {
+
+            steps {
+
+                sh '''
+                sudo rm -rf /var/www/html/*
+                sudo cp index2.html /var/www/html/
+                '''
+
+            }
+        }
+    }
+}
