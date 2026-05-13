@@ -1,35 +1,19 @@
 pipeline {
-    agent {
-        label 'slave1'
-    }
+
+    agent { label 'slave1' }
 
     stages {
 
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-            }
-        }
-
-
         stage('Deploy') {
+
             steps {
+
                 sh '''
                 sudo rm -rf /var/www/html/*
                 sudo cp index.html /var/www/html/
                 '''
+
             }
-        }
-
-    }
-
-    post {
-        success {
-            echo "Deployment Successful"
-        }
-
-        failure {
-            echo "Deployment Failed"
         }
     }
 }
