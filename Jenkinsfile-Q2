@@ -1,6 +1,8 @@
 pipeline {
 
-    agent any
+    agent {
+        label 'slave3'
+    }
 
     stages {
 
@@ -10,19 +12,27 @@ pipeline {
             }
         }
 
-        stage('Deploy Q2') {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+
+        stage('Deploy Q1') {
 
             steps {
 
                 sh '''
                 pwd
+
                 ls -l
 
                 docker rm -f c3 || true
 
                 docker run -dit \
                 --name c3 \
-                -p 8081:80 \
+                -p 90:80 \
                 httpd
 
                 docker cp index.html \
