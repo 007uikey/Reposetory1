@@ -19,36 +19,32 @@ pipeline {
         }
 
         stage('Deploy Master') {
-
             steps {
 
-                git branch:'master',
-                url:'https://github.com/username/repo.git'
+                dir('master-code') {
 
+                    git branch:'master',
+                    url:'https://github.com/username/repo.git'
 
-                sh '''
-                pwd
-                ls -la
+                    sh '''
+                    docker rm -f c1 || true
 
-                docker rm -f c1 || true
+                    docker run -d \
+                    --name c1 \
+                    -p 80:80 \
+                    httpd
 
-                docker run -dit \
-                --name c1 \
-                -p 80:80 \
-                httpd
+                    docker cp ./index.html \
+                    c1:/usr/local/apache2/htdocs/index.html
 
-                docker cp index.html \
-                c1:/usr/local/apache2/htdocs/index.html
-
-                docker exec c1 chmod 644 \
-                /usr/local/apache2/htdocs/index.html
-
-                '''
+                    docker exec c1 chmod 644 \
+                    /usr/local/apache2/htdocs/index.html
+                    '''
+                }
             }
         }
 
-        stage('Deploy Q1 to c2') {
-
+        stage('Deploy Q1') {
             steps {
 
                 dir('q1-code') {
@@ -57,24 +53,24 @@ pipeline {
                     url:'https://github.com/username/repo.git'
 
                     sh '''
-
                     docker rm -f c2 || true
 
-                    docker run -dit \
+                    docker run -d \
                     --name c2 \
                     -p 90:80 \
                     httpd
 
-                    docker cp index.html \
+                    docker cp ./index.html \
                     c2:/usr/local/apache2/htdocs/index.html
 
+                    docker exec c2 chmod 644 \
+                    /usr/local/apache2/htdocs/index.html
                     '''
                 }
             }
         }
 
-        stage('Deploy Q2 to c3') {
-
+        stage('Deploy Q2') {
             steps {
 
                 dir('q2-code') {
@@ -83,17 +79,18 @@ pipeline {
                     url:'https://github.com/username/repo.git'
 
                     sh '''
-
                     docker rm -f c3 || true
 
-                    docker run -dit \
+                    docker run -d \
                     --name c3 \
-                    -p 8081:80 \
+                    -p 8080:80 \
                     httpd
 
-                    docker cp index.html \
+                    docker cp ./index.html \
                     c3:/usr/local/apache2/htdocs/index.html
 
+                    docker exec c3 chmod 644 \
+                    /usr/local/apache2/htdocs/index.html
                     '''
                 }
             }
