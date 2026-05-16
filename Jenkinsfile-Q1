@@ -1,6 +1,8 @@
 pipeline {
 
-    agent any
+    agent {
+        label 'slave2'
+    }
 
     stages {
 
@@ -9,6 +11,13 @@ pipeline {
                 deleteDir()
             }
         }
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
 
         stage('Deploy Q1') {
 
