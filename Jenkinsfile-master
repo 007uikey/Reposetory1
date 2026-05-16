@@ -24,7 +24,7 @@ pipeline {
                 dir('master-code') {
 
                     git branch:'master',
-                    url:'https://github.com/username/repo.git'
+                    url:'https://github.com/007uikey/Reposetory1.git'
 
                     sh '''
                     docker rm -f c1 || true
@@ -50,7 +50,7 @@ pipeline {
                 dir('q1-code') {
 
                     git branch:'Q1',
-                    url:'https://github.com/username/repo.git'
+                    url:'https://github.com/007uikey/Reposetory1.git'
 
                     sh '''
                     docker rm -f c2 || true
@@ -76,14 +76,14 @@ pipeline {
                 dir('q2-code') {
 
                     git branch:'Q2',
-                    url:'https://github.com/username/repo.git'
+                    url:'https://github.com/007uikey/Reposetory1.git'
 
                     sh '''
                     docker rm -f c3 || true
 
                     docker run -d \
                     --name c3 \
-                    -p 8080:80 \
+                    -p 8081:80 \
                     httpd
 
                     docker cp ./index.html \
