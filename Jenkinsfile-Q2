@@ -1,0 +1,39 @@
+pipeline {
+
+    agent any
+
+    stages {
+
+        stage('Clean Workspace') {
+            steps {
+                deleteDir()
+            }
+        }
+
+        stage('Deploy Q2') {
+
+            steps {
+
+                sh '''
+                pwd
+                ls -l
+
+                docker rm -f c3 || true
+
+                docker run -dit \
+                --name c3 \
+                -p 8081:80 \
+                httpd
+
+                docker cp index.html \
+                c3:/usr/local/apache2/htdocs/index.html
+
+                docker exec c3 chmod 644 \
+                /usr/local/apache2/htdocs/index.html
+
+                '''
+            }
+        }
+
+    }
+}
