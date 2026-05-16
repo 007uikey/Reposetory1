@@ -17,6 +17,8 @@ pipeline {
             steps {
 
                 sh '''
+                pwd
+                ls -la
 
                 docker rm -f c1 || true
 
