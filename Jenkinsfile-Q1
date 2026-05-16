@@ -18,30 +18,81 @@ pipeline {
             }
         }
 
-
-        stage('Deploy Q1') {
-
+        stage('Deploy Master') {
             steps {
 
-                sh '''
-                pwd
+                dir('master-code') {
 
-                ls -l
+                    git branch:'master',
+                    url:'https://github.com/007uikey/Reposetory1.git'
 
-                docker rm -f c2 || true
+                    sh '''
+                    docker rm -f c1 || true
 
-                docker run -dit \
-                --name c2 \
-                -p 90:80 \
-                httpd
+                    docker run -d \
+                    --name c1 \
+                    -p 80:80 \
+                    httpd
 
-                docker cp index.html \
-                c2:/usr/local/apache2/htdocs/index.html
+                    docker cp ./index.html \
+                    c1:/usr/local/apache2/htdocs/index.html
 
-                docker exec c2 chmod 644 \
-                /usr/local/apache2/htdocs/index.html
+                    docker exec c1 chmod 644 \
+                    /usr/local/apache2/htdocs/index.html
+                    '''
+                }
+            }
+        }
 
-                '''
+        stage('Deploy Q1') {
+            steps {
+
+                dir('q1-code') {
+
+                    git branch:'Q1',
+                    url:'https://github.com/007uikey/Reposetory1.git'
+
+                    sh '''
+                    docker rm -f c2 || true
+
+                    docker run -d \
+                    --name c2 \
+                    -p 90:80 \
+                    httpd
+
+                    docker cp ./index.html \
+                    c2:/usr/local/apache2/htdocs/index.html
+
+                    docker exec c2 chmod 644 \
+                    /usr/local/apache2/htdocs/index.html
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Q2') {
+            steps {
+
+                dir('q2-code') {
+
+                    git branch:'Q2',
+                    url:'https://github.com/007uikey/Reposetory1.git'
+
+                    sh '''
+                    docker rm -f c3 || true
+
+                    docker run -d \
+                    --name c3 \
+                    -p 8081:80 \
+                    httpd
+
+                    docker cp ./index.html \
+                    c3:/usr/local/apache2/htdocs/index.html
+
+                    docker exec c3 chmod 644 \
+                    /usr/local/apache2/htdocs/index.html
+                    '''
+                }
             }
         }
 
