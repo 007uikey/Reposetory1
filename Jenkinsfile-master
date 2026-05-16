@@ -22,6 +22,10 @@ pipeline {
 
             steps {
 
+                git branch:'master',
+                url:'https://github.com/username/repo.git'
+
+
                 sh '''
                 pwd
                 ls -la
@@ -40,6 +44,58 @@ pipeline {
                 /usr/local/apache2/htdocs/index.html
 
                 '''
+            }
+        }
+
+        stage('Deploy Q1 to c2') {
+
+            steps {
+
+                dir('q1-code') {
+
+                    git branch:'Q1',
+                    url:'https://github.com/username/repo.git'
+
+                    sh '''
+
+                    docker rm -f c2 || true
+
+                    docker run -dit \
+                    --name c2 \
+                    -p 90:80 \
+                    httpd
+
+                    docker cp index.html \
+                    c2:/usr/local/apache2/htdocs/index.html
+
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Q2 to c3') {
+
+            steps {
+
+                dir('q2-code') {
+
+                    git branch:'Q2',
+                    url:'https://github.com/username/repo.git'
+
+                    sh '''
+
+                    docker rm -f c3 || true
+
+                    docker run -dit \
+                    --name c3 \
+                    -p 8081:80 \
+                    httpd
+
+                    docker cp index.html \
+                    c3:/usr/local/apache2/htdocs/index.html
+
+                    '''
+                }
             }
         }
 
