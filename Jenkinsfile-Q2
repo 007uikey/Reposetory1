@@ -32,7 +32,7 @@ pipeline {
 
                 docker run -dit \
                 --name c3 \
-                -p 8082:80 \
+                -p 8081:80 \
                 httpd
 
                 docker cp index.html \
